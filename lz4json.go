@@ -2,7 +2,6 @@ package lz4json
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/bkaradzic/go-lz4"
 )
 
@@ -11,8 +10,6 @@ func Marshal(v interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("text:", string(buf))
 
 	buf, err = lz4.Encode(nil, buf)
 	if err != nil {
