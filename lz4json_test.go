@@ -1,6 +1,9 @@
 package lz4json
 
 import (
+	"bytes"
+	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"testing"
 )
@@ -59,6 +62,20 @@ func TestMarshal(t *testing.T) {
 	data, err := Marshal(v)
 	if err != nil {
 		t.Fatalf(err.Error())
+	}
+
+	// check size
+	jsondata, err := json.Marshal(v)
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	jsonsize := len(jsondata)
+
+	reader := bytes.NewReader(data)
+	var uncompressedSize int32
+	binary.Read(reader, binary.LittleEndian, &uncompressedSize)
+	if int32(jsonsize) != uncompressedSize {
+		t.Fatal("jsonsize(%d) != uncompressedSize(%d)", jsonsize, uncompressedSize)
 	}
 
 	result := map[string]interface{}{}
